@@ -15,6 +15,10 @@ python -m venv venv
 source venv/Scripts/activate
 ```
 
-## Instalação dos pacotes de teste
+## Instalação dependencias
+
+**`pip install -r requirements.txt`**
+
+## atualizando as Instalação dependencias
 
 **`pip freeze > requirements.txt`**
