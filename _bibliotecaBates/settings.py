@@ -44,6 +44,7 @@ MY_APP = [
     "users",
     "books",
     "copies",
+    "loans",
 ]
 
 # Application definition
