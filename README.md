@@ -22,3 +22,10 @@ source venv/Scripts/activate
 ## atualizando as Instalação dependencias
 
 **`pip freeze > requirements.txt`**
+
+## Rota de books sem autenticação
+
+**`GET : /api/books/`** `lista todo os livros `
+**`GET : /api/books/<book_id>/`** `lsita um livro em especifico `
+
+## Rota de Books autorizadas somente para is_superuser/ funcionario

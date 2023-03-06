@@ -14,7 +14,9 @@ class BookView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
 
 
-class BookRetrieveAPIView(generics.RetrieveAPIView):
+class BookRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [BookPermission]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_url_kwarg = "book_id"
