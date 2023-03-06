@@ -3,11 +3,11 @@ from django.db import models
 
 # Create your models here.
 class Book(models.Model):
-    isnb: models.CharField(max_length=17, unique=True)
-    title: models.CharField(max_length=150)
-    author: models.CharField(max_length=150)
-    publisher: models.CharField(max_length=100)
-    edition: models.DateField()
-    genre: models.CharField(max_length=50, null=True)
-    language: models.CharField(max_length=50)
-    pages_number: models.IntegerField()
+    isnb = models.CharField(max_length=17, unique=True)
+    title = models.CharField(max_length=150)
+    author = models.CharField(max_length=150)
+    publisher = models.CharField(max_length=100)
+    edition = models.DateField()
+    genre = models.CharField(max_length=50, null=True)
+    language = models.CharField(max_length=50)
+    pages_number = models.IntegerField()
