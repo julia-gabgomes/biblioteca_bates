@@ -38,7 +38,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data: dict):
-        print("entrou", validated_data.keys())
         super_user = validated_data.get("is_employee")
         if super_user:
             return User.objects.create_superuser(**validated_data)
