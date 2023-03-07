@@ -2,9 +2,13 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import Book
+import ipdb
+from copies.models import Copy
 
 
 class BookSerializer(serializers.ModelSerializer):
+    count_copies = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
         fields = [
@@ -17,6 +21,7 @@ class BookSerializer(serializers.ModelSerializer):
             "genre",
             "language",
             "pages_number",
+            "count_copies",
         ]
         extra_kwargs = {
             "isbn": {
@@ -28,3 +33,7 @@ class BookSerializer(serializers.ModelSerializer):
                 ]
             },
         }
+
+    def get_count_copies(self, obj: Book):
+        # books = Copy.objects.filter(book_id=obj.book_id).count()
+        return obj.copies.all().count()
