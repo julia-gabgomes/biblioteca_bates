@@ -8,6 +8,7 @@ from copies.models import Copy
 
 class BookSerializer(serializers.ModelSerializer):
     count_copies = serializers.SerializerMethodField()
+    count_loaned_copies = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
@@ -22,6 +23,7 @@ class BookSerializer(serializers.ModelSerializer):
             "language",
             "pages_number",
             "count_copies",
+            "count_loaned_copies",
         ]
         extra_kwargs = {
             "isbn": {
@@ -35,5 +37,8 @@ class BookSerializer(serializers.ModelSerializer):
         }
 
     def get_count_copies(self, obj: Book):
-        # books = Copy.objects.filter(book_id=obj.book_id).count()
         return obj.copies.all().count()
+
+    def get_count_loaned_copies(self, obj: Book):
+        copy = Copy.objects.filter(book_id=obj.id)
+        return copy.filter(is_loaned=False).count()
