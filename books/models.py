@@ -11,4 +11,4 @@ class Book(models.Model):
     genre = models.CharField(max_length=50, null=True)
     language = models.CharField(max_length=50)
     pages_number = models.IntegerField()
-    
+    count_loaned_copies = models.IntegerField(default=0)

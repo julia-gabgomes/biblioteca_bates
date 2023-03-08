@@ -17,7 +17,7 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    books = serializers.SerializerMethodField()
+    # books = serializers.SerializerMethodField()
 
     class Meta:
         model = User
