@@ -48,7 +48,7 @@ class User(AbstractUser):
     is_blocked = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
 
-    books = models.ManyToManyField("books.Book", related_name="follow")
+    books = models.ManyToManyField("books.Book", related_name="follow", blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
