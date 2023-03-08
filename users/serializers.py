@@ -3,6 +3,8 @@ from rest_framework.validators import UniqueValidator
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+import ipdb
+
 
 class CustomJWTSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -14,6 +16,9 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+
+    books = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = [
@@ -25,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "birthdate",
             "is_blocked",
             "is_employee",
+            "books",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
@@ -53,3 +59,8 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+    # def get_books(self, user):
+    #     # ipdb.set_trace()
+    #     books = user.books.all()
+    #     return books
