@@ -15,9 +15,18 @@ class LoanSerializer(serializers.ModelSerializer):
             "is_delayed",
             "returned",
             "is_active",
+            "isbn",
             "copy",
             "user",
         ]
+        # extra_kwargs = {
+        #     "isbn": {
+        #         "validators": [
+        #             UniqueValidator(Loan.objects.all(), "This field must be unique.")
+        #         ],
+        #         "required": True,
+        #     },
+        # }
 
     def create(self, validated_data):
         return Loan.objects.create(**validated_data)

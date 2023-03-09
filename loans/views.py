@@ -31,11 +31,18 @@ class LoanView(generics.ListCreateAPIView):
     serializer_class = LoanSerializer
 
     def post(self, request, *args, **kwargs):
+        isbn = self.request.data["isbn"]
         user = get_object_or_404(User, id=self.kwargs.get("user_id"))
         if user.is_blocked:
             return Response({"message": "User has books to return"}, 401)
 
-        book = get_object_or_404(Book, isbn=self.request.data["isbn"])
+        loan = Loan.objects.filter(isbn=isbn)
+        if loan:
+            return Response(
+                {"message": "This user already have a copy with this isbn"}, 401
+            )
+
+        book = get_object_or_404(Book, isbn=isbn)
         if book.count_loaned_copies:
             return Response({"message": "No copies available"}, 401)
 
@@ -64,6 +71,7 @@ class LoanView(generics.ListCreateAPIView):
                 "expected_return": expected_date,
                 "copy": one_copy.id,
                 "user": user.id,
+                "isbn": isbn,
             }
         )
 
@@ -71,9 +79,24 @@ class LoanView(generics.ListCreateAPIView):
         serializer.save()
         return Response(serializer.data)
 
-        # def perform_create(self, serializer):
 
-        #     print(date, "ahsuhuashusaashuhauhehe")
-        #     return serializer.save(expected_return=date, copy= , user= )
+class LoanReturnView(generics.UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [LoanPermission]
+    queryset = Loan.objects.all()
+    lookup_url_kwarg = "user_id"
+    serializer_class = LoanSerializer
 
-        # serializer_class = LoanSerializer
+    def perform_update(self, serializer):
+        isbn = self.request.data["isbn"]
+        user = get_object_or_404(User, id=self.kwargs.get("user_id"))
+        loan = get_object_or_404(Loan, isbn=isbn)
+
+        loan.returned = datetime.today()
+        loan.is_active = False
+        loan.copy.is_loaned = False
+        loan.is_delayed = False
+        loan.save()
+        # serializer = LoanSerializer(loan)
+
+        # return Response(status=201)
