@@ -7,11 +7,20 @@ from copies.models import Copy
 from users.models import User
 from books.models import Book
 from .permissions import LoanPermission
-from datetime import datetime
+from datetime import datetime, timedelta
 from rest_framework.response import Response
 import ipdb
 
+
 # Create your views here.
+# def is_weekday(data_obj):
+
+#     if data_obj.weekday() == 5:
+#      returned = returned + timedelta(days=2)
+
+#     elif data_obj.weekday() == 6:
+#      returned = returned + timedelta(days=1)
+#     return returned
 
 
 class LoanView(generics.ListCreateAPIView):
@@ -36,14 +45,23 @@ class LoanView(generics.ListCreateAPIView):
         if copy_to_loan.count() == 0:
             return Response({"message": "No copies available"}, 401)
 
+        date_time = datetime.now()
+        returned = date_time + timedelta(days=6)
+        if returned.weekday() == 5:
+            returned = returned + timedelta(days=2)
+
+        elif returned.weekday() == 6:
+            returned = returned + timedelta(days=1)
+
+        return_date = returned.strftime("%Y-%m-%d")
+
         one_copy = copy_to_loan.first()
         one_copy.is_loaned = True
         one_copy.save()
 
-        date = datetime.today()
         serializer = self.serializer_class(
             data={
-                "return_date": date,
+                "return_date": return_date,
                 "copy": one_copy.id,
                 "user": user.id,
             }

@@ -3,7 +3,7 @@ from django.db import models
 
 class Loan(models.Model):
     loan_date = models.DateTimeField(auto_now_add=True)
-    return_date = models.DateTimeField()
+    return_date = models.DateField()
     is_delayed = models.BooleanField(default=False, blank=False)
 
     copy = models.ForeignKey(
