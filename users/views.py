@@ -1,19 +1,15 @@
-from django.shortcuts import get_object_or_404, get_list_or_404
-from .models import User
+from rest_framework import generics, views
+from rest_framework.views import Response, status
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import UserSerializer
-from django.shortcuts import get_object_or_404
-from .permissions import IsAccountOwner
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework import views
-
-from books.models import Book
-from books.serializers import BookSerializer
 from rest_framework.permissions import IsAuthenticated
-import ipdb
+from django.shortcuts import get_object_or_404
 
-# Create your views here. Obrigatorio usar Generic views
+from .models import User
+from books.models import Book
+
+from .serializers import UserSerializer
+
+from .permissions import IsAccountOwner
 
 
 class UserView(generics.ListCreateAPIView):
@@ -42,4 +38,15 @@ class FollowAPIView(views.APIView):
 
         serializer = UserSerializer(user)
 
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id)
+        user = request.user
+
+        user.books.remove(book)
+        user.save()
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status.HTTP_204_NO_CONTENT)

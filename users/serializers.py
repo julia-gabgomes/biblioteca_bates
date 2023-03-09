@@ -17,7 +17,7 @@ class CustomJWTSerializer(TokenObtainPairSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    # books = serializers.SerializerMethodField()
+    followed_books = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "birthdate",
             "is_blocked",
             "is_employee",
-            "books",
+            "followed_books",
         ]
         extra_kwargs = {
             "password": {"write_only": True},
@@ -60,7 +60,11 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance
 
-    # def get_books(self, user):
-    #     # ipdb.set_trace()
-    #     books = user.books.all()
-    #     return books
+    def get_followed_books(self, user):
+        books = user.books.all()
+        books_info = []
+
+        for book in books:
+            books_info.append({"title": book.title, "author": book.author})
+
+        return books_info
