@@ -11,8 +11,10 @@ class LoanSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "loan_date",
+            "expected_return",
             "is_delayed",
-            "return_date",
+            "returned",
+            "is_active",
             "copy",
             "user",
         ]
