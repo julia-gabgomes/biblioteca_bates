@@ -27,22 +27,33 @@ class LoanView(generics.ListCreateAPIView):
             return Response({"message": "User has books to return"}, 401)
 
         book = get_object_or_404(Book, isbn=self.request.data["isbn"])
-        if book.count_loaned_copies == 0:
+        print(book.count_loaned_copies, "---------->>>>>>>>>>>>")
+        if book.count_loaned_copies:
             return Response({"message": "No copies available"}, 401)
 
         copies = Copy.objects.filter(book_id=book.id)
-        copy_to_loan = copies.filter(is_loaned=False)
-        copy_to_loan[0].is_loaned = True
-        # copy_to_loan.save()
-        date = datetime.today()
-        # serializer = LoanSerializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        LoanSerializer(return_date=date, copy=copy_to_loan[0], user=user)
-        return super().post(request, *args, **kwargs)
+        copy_to_loan = copies.filter(is_loaned=False).first()
 
-    # def perform_create(self, serializer):
+        copy_to_loan.is_loaned = True
+        copy_to_loan.save()
 
-    #     print(date, "ahsuhuashusaashuhauhehe")
-    #     return serializer.save(return_date=date, copy= , user= )
+        date = datetime.today().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        print(date, copy_to_loan, user.id, "---------->>>>>>>>>>>>")
+        serializer = self.serializer_class(
+            data={
+                "return_date": date,
+                "copy": copy_to_loan.id,
+                "user": user.id,
+            }
+        )
 
-    serializer_class = LoanSerializer
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+        # def perform_create(self, serializer):
+
+        #     print(date, "ahsuhuashusaashuhauhehe")
+        #     return serializer.save(return_date=date, copy= , user= )
+
+        # serializer_class = LoanSerializer

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Copy
 from django.db.models import Count
+from books.models import Book
 
 
 class Copyserializer(serializers.ModelSerializer):
