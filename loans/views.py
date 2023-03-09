@@ -27,22 +27,24 @@ class LoanView(generics.ListCreateAPIView):
             return Response({"message": "User has books to return"}, 401)
 
         book = get_object_or_404(Book, isbn=self.request.data["isbn"])
-        print(book.count_loaned_copies, "---------->>>>>>>>>>>>")
         if book.count_loaned_copies:
             return Response({"message": "No copies available"}, 401)
 
         copies = Copy.objects.filter(book_id=book.id)
-        copy_to_loan = copies.filter(is_loaned=False).first()
+        copy_to_loan = copies.filter(is_loaned=False)
 
-        copy_to_loan.is_loaned = True
-        copy_to_loan.save()
+        if copy_to_loan.count() == 0:
+            return Response({"message": "No copies available"}, 401)
 
-        date = datetime.today().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        print(date, copy_to_loan, user.id, "---------->>>>>>>>>>>>")
+        one_copy = copy_to_loan.first()
+        one_copy.is_loaned = True
+        one_copy.save()
+
+        date = datetime.today()
         serializer = self.serializer_class(
             data={
                 "return_date": date,
-                "copy": copy_to_loan.id,
+                "copy": one_copy.id,
                 "user": user.id,
             }
         )

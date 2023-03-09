@@ -41,4 +41,5 @@ class BookSerializer(serializers.ModelSerializer):
 
     def get_count_loaned_copies(self, obj: Book):
         copy = Copy.objects.filter(book_id=obj.id)
+
         return copy.filter(is_loaned=False).count()
