@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
             model_name='loan',
             name='isbn',
             field=models.CharField(default='123456789-1234567', max_length=17, unique=True),
