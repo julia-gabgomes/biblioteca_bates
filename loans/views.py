@@ -46,14 +46,14 @@ class LoanView(generics.ListCreateAPIView):
             return Response({"message": "No copies available"}, 401)
 
         date_time = datetime.now()
-        returned = date_time + timedelta(days=6)
-        if returned.weekday() == 5:
-            returned = returned + timedelta(days=2)
+        expected = date_time + timedelta(days=6)
+        if expected.weekday() == 5:
+            expected = expected + timedelta(days=2)
 
-        elif returned.weekday() == 6:
-            returned = returned + timedelta(days=1)
+        elif expected.weekday() == 6:
+            expected = expected + timedelta(days=1)
 
-        return_date = returned.strftime("%Y-%m-%d")
+        expected_date = expected.strftime("%Y-%m-%d")
 
         one_copy = copy_to_loan.first()
         one_copy.is_loaned = True
@@ -61,7 +61,7 @@ class LoanView(generics.ListCreateAPIView):
 
         serializer = self.serializer_class(
             data={
-                "return_date": return_date,
+                "expected_return": expected_date,
                 "copy": one_copy.id,
                 "user": user.id,
             }
@@ -74,6 +74,6 @@ class LoanView(generics.ListCreateAPIView):
         # def perform_create(self, serializer):
 
         #     print(date, "ahsuhuashusaashuhauhehe")
-        #     return serializer.save(return_date=date, copy= , user= )
+        #     return serializer.save(expected_return=date, copy= , user= )
 
         # serializer_class = LoanSerializer
