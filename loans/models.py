@@ -5,7 +5,7 @@ class Loan(models.Model):
     loan_date = models.DateTimeField(auto_now_add=True)
     expected_return = models.DateField()
     is_delayed = models.BooleanField(default=False, blank=False)
-    returned = models.DateTimeField(blank=True)
+    returned = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True, blank=False)
 
     copy = models.ForeignKey(
