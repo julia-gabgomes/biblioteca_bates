@@ -31,14 +31,13 @@ class LoanSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Loan.objects.create(**validated_data)
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Loan, validated_data):
         copy = get_object_or_404(Copy, id=instance.copy_id)
 
         instance.returned = datetime.today()
         copy.is_loaned = False
         instance.is_active = False
         instance.is_delayed = False
-        instance.isbn = ""
         instance.save()
         copy.save()
 
