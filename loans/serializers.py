@@ -4,12 +4,13 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from copies.models import Copy
+from copies.serializers import Copyserializer
 from .models import Loan
 from users.serializers import UserSerializer
 
 
 class LoanSerializer(serializers.ModelSerializer):
-    title_book = serializers.CharField(source="copy.book.title")
+    # copy = Copyserializer()
     # user = UserSerializer()
 
     class Meta:
@@ -24,7 +25,6 @@ class LoanSerializer(serializers.ModelSerializer):
             "isbn",
             "copy",
             "user",
-            "title_book",
         ]
         depth = 2
 
@@ -34,11 +34,11 @@ class LoanSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         copy = get_object_or_404(Copy, id=instance.copy_id)
 
-
         instance.returned = datetime.today()
         copy.is_loaned = False
         instance.is_active = False
         instance.is_delayed = False
+        instance.isbn = ""
         instance.save()
         copy.save()
 

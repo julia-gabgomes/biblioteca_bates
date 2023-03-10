@@ -67,16 +67,11 @@ class LoanView(generics.ListCreateAPIView):
         one_copy.save()
 
         serializer = self.serializer_class(
-            data={
-                "expected_return": expected_date,
-                "copy": one_copy.id,
-                "user": user.id,
-                "isbn": isbn,
-            }
+            data={"expected_return": expected_date, "isbn": isbn}
         )
 
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(copy=one_copy, user=user)
         return Response(serializer.data)
 
 
