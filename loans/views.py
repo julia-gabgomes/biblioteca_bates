@@ -79,7 +79,7 @@ class LoanReturnView(generics.UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [LoanPermission]
     queryset = Loan.objects.all()
-    lookup_url_kwarg = "user_id"
+    lookup_url_kwarg = "copy_id"
     serializer_class = LoanSerializer
 
     # def perform_update(self, serializer):
