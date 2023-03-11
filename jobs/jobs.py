@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from users.models import User
 from books.serializers import BookSerializer
 
@@ -7,73 +5,48 @@ from django.core.mail import send_mass_mail
 from django.conf import settings
 
 
-# carderanhenrique@gmail.com
-
-
 def emails_data():
-
     email_list = []
-
     users = User.objects.all()
 
     for user in users:
         user_email = []
-        available_books = []
-        # template_message
-
-        result = [
-            "Biblioteca Bates | Livros disponíveis para empréstimo",
-            available_books,
-            settings.EMAIL_HOST_USER,
-            user_email,
-        ]
+        template_message = f"Olá, {user.first_name}! A seguir você pode conferir a lista dos seus livros preferidos que estão disponíveis para empréstimo:"
 
         user_email.append(user.email)
-
         followed_books = user.books.all()
-        # validação -> segue algum livro
 
-        if len(followed_books) > 0:
-            for book in followed_books:
-                copies = book.copies.all()
-                # filter
+        if len(followed_books) == 0:
+            continue
 
-                for copy in copies:
-                    if copy.is_loaned == False:
-                        serializer = BookSerializer(book)
-                        available_books.append(serializer.data)
+        for index, book in enumerate(followed_books):
+            copies = book.copies.filter(is_loaned=False)
 
-            email_list.append(tuple(result))
+            if len(copies) == 0:
+                continue
+
+            serializer = BookSerializer(book)
+
+            book_title = serializer.data["title"]
+            book_author = serializer.data["author"]
+            book_genre = serializer.data["genre"] or "Não identificado"
+            book_string = f"\n {index + 1} - {book_title} \n Autor(a): {book_author} \n Gênero: {book_genre}"
+            template_message = template_message + book_string
+
+            email_list.append(
+                tuple(
+                    [
+                        "Biblioteca Bates | Livros disponíveis para empréstimo",
+                        template_message,
+                        settings.EMAIL_HOST_USER,
+                        user_email,
+                    ]
+                )
+            )
 
     return email_list
 
 
-# message = "Olá, user.email! A seguir você pode conferir a lista de livros disponíveis para empréstimo:"
-
-
-"""
-----------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-"""
-
-
 def schedule_follow_emails():
     emails = emails_data()
-    print(emails)
     send_mass_mail(emails, fail_silently=False)
-
-
-"""
-OBJETIVO:
-- tupla de dados de envio
-
-formato dos dados de envio:
-# (
-#     subject,
-#     corpo,
-#     settings.EMAIL_HOST_USER,
-#     ["user@mail.com"],
-# )
-"""
