@@ -12,5 +12,5 @@ urlpatterns = [
     path("books/<int:book_id>/copyretriever/", CopyRetrieveAPIView.as_view()),
     path("books/<int:book_id>/follow/", FollowAPIView.as_view()),
     path("books/<int:user_id>/loan/", LoanView.as_view()),
-    path("books/<int:copy_id>/return/", LoanReturnView.as_view()),
+    path("books/<int:loan_id>/return/", LoanReturnView.as_view()),
 ]
