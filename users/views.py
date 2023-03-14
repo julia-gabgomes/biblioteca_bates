@@ -29,6 +29,9 @@ class FollowAPIView(views.APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
     def patch(self, request, book_id):
         book = get_object_or_404(Book, id=book_id)
         user = request.user

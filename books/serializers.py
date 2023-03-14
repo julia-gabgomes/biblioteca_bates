@@ -2,8 +2,10 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from .models import Book
-import ipdb
 from copies.models import Copy
+
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -36,9 +38,11 @@ class BookSerializer(serializers.ModelSerializer):
             },
         }
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_count_copies(self, obj: Book):
         return obj.copies.all().count()
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_count_loaned_copies(self, obj: Book):
         copy = Copy.objects.filter(book_id=obj.id)
 
