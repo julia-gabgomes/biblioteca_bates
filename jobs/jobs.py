@@ -1,6 +1,8 @@
 from users.models import User
 from books.serializers import BookSerializer
 
+from loans.models import Loan
+
 from django.core.mail import send_mass_mail
 from django.conf import settings
 
@@ -47,6 +49,12 @@ def emails_data():
     return email_list
 
 
-def schedule_follow_emails():
+def send_follow_emails():
     emails = emails_data()
     send_mass_mail(emails, fail_silently=False)
+
+
+def block_users():
+    # active_loans = Loan.objects.filter(is_active=True)
+    # print(active_loans)
+    ...
