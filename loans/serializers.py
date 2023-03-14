@@ -8,7 +8,15 @@ from copies.serializers import Copyserializer
 from .models import Loan
 from users.serializers import UserSerializer
 
+from drf_spectacular.utils import extend_schema_serializer
 
+
+@extend_schema_serializer(
+    exclude_fields=(
+        "copy",
+        "user",
+    ),
+)
 class LoanSerializer(serializers.ModelSerializer):
     # copy = Copyserializer()
     # user = UserSerializer()
