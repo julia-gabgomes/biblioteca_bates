@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-
+from datetime import datetime, timedelta
 from copies.models import Copy
 from users.models import User
 from .models import Loan
@@ -39,8 +39,9 @@ class LoanSerializer(serializers.ModelSerializer):
         loans_active_delayed = loans__active.filter(**_vals_delayed)
         if user.is_blocked:
             if not loans_active_delayed:
-                print("entrou")
-                user.is_blocked = False
+                date_time = datetime.now()
+                expected = date_time + timedelta(days=6)
+                user.blocked_until = expected
 
         instance.returned = datetime.today()
         copy.is_loaned = False

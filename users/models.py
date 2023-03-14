@@ -47,6 +47,7 @@ class User(AbstractUser):
     birthdate = models.DateField(null=True)
     is_blocked = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
+    blocked_until = models.DateField(null=True)
 
     books = models.ManyToManyField("books.Book", related_name="follow", blank=True)
 
