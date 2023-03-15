@@ -43,7 +43,9 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 THIRD_PARTY_APP = [
     "rest_framework",
+    "drf_spectacular",
 ]
+
 MY_APP = [
     "users",
     "books",
@@ -187,3 +189,10 @@ EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Biblioteca Bates",
+    "DESCRIPTION": "O objetivo desse projeto é oferecer uma API REST para o gerenciamento dos livros na Biblioteca Bates.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}

@@ -3,7 +3,8 @@ from rest_framework.validators import UniqueValidator
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-import ipdb
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 
 
 class CustomJWTSerializer(TokenObtainPairSerializer):
@@ -60,6 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance
 
+    @extend_schema_field(OpenApiTypes.ANY)
     def get_followed_books(self, user):
         books = user.books.all()
         books_info = []
