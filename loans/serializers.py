@@ -1,14 +1,20 @@
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-
+from datetime import datetime, timedelta
 from copies.models import Copy
-from copies.serializers import Copyserializer
+from users.models import User
 from .models import Loan
-from users.serializers import UserSerializer
+
+from drf_spectacular.utils import extend_schema_serializer
 
 
+@extend_schema_serializer(
+    exclude_fields=(
+        "copy",
+        "user",
+    ),
+)
 class LoanSerializer(serializers.ModelSerializer):
     # copy = Copyserializer()
     # user = UserSerializer()
@@ -32,13 +38,25 @@ class LoanSerializer(serializers.ModelSerializer):
         return Loan.objects.create(**validated_data)
 
     def update(self, instance: Loan, validated_data):
-        copy = get_object_or_404(Copy, id=instance.copy_id)
+        user = User.objects.get(id=instance.user.id)
+        copy = Copy.objects.get(id=instance.copy.id)
+        user_loans = Loan.objects.filter(user=instance.user)
+        _vals_active = {"is_active": True}
+        loans__active = user_loans.filter(**_vals_active)
+        _vals_delayed = {"is_delayed": True}
+        loans_active_delayed = loans__active.filter(**_vals_delayed)
+        if user.is_blocked:
+            if not loans_active_delayed:
+                date_time = datetime.now()
+                expected = date_time + timedelta(days=6)
+                user.blocked_until = expected
 
         instance.returned = datetime.today()
         copy.is_loaned = False
         instance.is_active = False
         instance.is_delayed = False
         instance.save()
+        user.save()
         copy.save()
 
         return instance

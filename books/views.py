@@ -6,6 +6,9 @@ from books.models import Book
 from books.serializers import BookSerializer
 from .permissions import BookPermission
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+
 
 class BookView(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]

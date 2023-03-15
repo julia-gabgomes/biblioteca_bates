@@ -36,9 +36,6 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-# Create your models here.
-
-
 class User(AbstractUser):
     username = None
     email = models.EmailField(max_length=127, unique=True)
@@ -47,6 +44,7 @@ class User(AbstractUser):
     birthdate = models.DateField(null=True)
     is_blocked = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
+    blocked_until = models.DateField(null=True)
 
     books = models.ManyToManyField("books.Book", related_name="follow", blank=True)
 
